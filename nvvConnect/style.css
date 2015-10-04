@@ -1,0 +1,144 @@
+/* -------------- nvvConnect -------------------------*/
+
+
+
+div.dokuwiki table.nvvSpieleGespielt,
+div.dokuwiki table.nvvSpieleVorschau {
+/*border:1px solid #777;*/
+margin:20px 10px 20px 0;
+/*width:630px;*/
+width:100%;
+text-align:left;
+border-collapse:collapse;
+}
+
+
+div.dokuwiki table.nvvSpieleGespielt td,
+div.dokuwiki table.nvvSpieleVorschau td {
+padding:2px 4px;
+vertical-align:center;
+}
+
+div.dokuwiki table.nvvSpieleGespielt tr.spieltag td,
+div.dokuwiki table.nvvSpieleVorschau tr.spieltag td {
+border-bottom:1px solid black;
+padding-top:15px;
+}
+
+div.dokuwiki table.nvvSpieleGespielt tr.spiel td,
+div.dokuwiki table.nvvSpieleVorschau tr.spiel td {
+/*border-bottom:1px solid #999;*/
+}
+
+/*div.dokuwiki table.nvvSpieleGespielt span.ort,
+div.dokuwiki table.nvvSpieleVorschau span.ort,*/
+div.dokuwiki table.nvvSpieleGespielt span.datum,
+div.dokuwiki table.nvvSpieleVorschau span.datum {
+font-weight:bold;
+}
+
+div.dokuwiki table.nvvSpieleGespielt span.ort,
+div.dokuwiki table.nvvSpieleVorschau span.ort {
+font-style:italic;
+}
+
+
+div.dokuwiki table.nvvSpieleGespielt td.ergebnis {
+font-size:1.2em;
+}
+
+
+div.dokuwiki table.nvvSpieleGespielt td.punkte {
+text-align:center;
+font-size:0.9em;
+}
+
+div.dokuwiki table.nvvTabelle {
+margin:30px 10px 30px 0;
+/*font-size:12px;*/
+border:1px solid black;
+border-collapse:collapse;
+width:500px;
+background:#eee;
+}
+div.dokuwiki table.nvvTabelle td {
+border:1px solid #888;
+padding:2px;
+}
+div.dokuwiki table.nvvTabelle tr.kopfzeile {
+background:#bbb;
+font-weight:bold;
+}
+div.dokuwiki table.nvvTabelle tr.wir {
+background:#ddd;
+}
+div.dokuwiki table.nvvTabelle tr.wir td.team {
+font-weight:bold;
+}
+
+div.dokuwiki table.nvvTabelleKlein {
+border:none;
+border-collapse:collapse;
+empty-cells:show;
+width:100%;
+/*
+margin-left:auto;
+margin-right:auto;
+*/
+}
+div.dokuwiki table.nvvTabelleKlein td {
+padding:0 2px;
+}
+div.dokuwiki table.nvvTabelleKlein tr.kopfzeile {
+/*border-bottom:1px solid #222;*/
+font-style:italic;
+}
+/*
+div.dokuwiki table.nvvTabelleKlein td.platz {
+border-right:1px solid #222;
+}
+*/
+div.dokuwiki table.nvvTabelleKlein td.spiele {
+text-align:center;
+}
+div.dokuwiki table.nvvTabelleKlein td.punkte {
+text-align:center;
+}
+div.dokuwiki table.nvvTabelleKlein td.punkteplus {
+padding-right:0;
+text-align:right;
+}
+div.dokuwiki table.nvvTabelleKlein td.punkteminus {
+padding-left:0;
+text-align:left;
+}
+div.dokuwiki table.nvvTabelleKlein tr.kopfzeile td.punkte {
+text-align:center;
+}
+/*div.dokuwiki table.nvvTabelleKlein tr.wir {
+border:1px solid #da4;
+}*/
+div.dokuwiki table.nvvTabelleKlein tr.wir td {
+font-weight:bold;
+padding-top:2px;
+padding-bottom:2px;
+}
+
+div.dokuwiki p.nvvFehler {
+color:#d00;
+}
+
+p.nvvNextSpieltag span.nvvNextDatum {
+font-style:italic;
+}
+p.nvvNextSpieltag span.nvvNextTeam {
+font-weight:bold;
+}
+
+span.nvvGespieltKleinDatum {
+font-style:italic;
+}
+span.nvvGespieltKleinGegner {
+font-weight:bold;
+}
+

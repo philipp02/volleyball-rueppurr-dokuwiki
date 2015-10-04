@@ -1,0 +1,260 @@
+/**
+ * Tableless Layout for default template
+ *
+ * @author Andreas Gohr <andi@splitbrain.org>
+ * @author moraes <moraes@tipos.com.br>
+ * @author Riccardo Govoni <battlehorse@gmail.com>
+ *
+ * Simple menu topbar
+ * @author:	 Michael Klier <chi@chimeric.de>
+ * @homepage: 	 http://www.chimeric.de
+ */
+
+/* ---------- Actions ------------- */
+
+a.tpl_action {
+	font-variant : small_caps;
+	padding : 10px 1px 10px 24px;
+}
+
+/* -------------- top row --------------- */
+div.dokuwiki div.imagerow {
+  background-image: url(images/Leiste_Startseite.jpg);
+  background-repeat: repeat-x;	
+  background-position: top left ;
+  background-color: __tus_wiki_background__; 
+  height: 150px;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+div.dokuwiki div.imagerow_halle {
+  background-image: url(images/Leiste_Halle.jpg);
+  background-repeat: repeat-x;	
+  background-position: top left ;
+  background-color: __tus_wiki_background__; 
+  height: 150px;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+div.dokuwiki div.imagerow_beach {
+  background-image: url(images/Leiste_Beach.jpg);
+  background-repeat: repeat-x;	
+  background-position: top left ;
+  background-color: __tus_wiki_background__; 
+  height: 150px;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+div.dokuwiki .header {
+  background-image: url(images/tus_header_background.png);
+  background-repeat: repeat-x;
+  height: 86px;
+  overflow: hidden;
+}
+
+// used for pagename in the top left of the page. Unused in rg template 
+div.dokuwiki .title {
+  float: left;
+  text-align: left;
+}
+
+div.dokuwiki .title a:link, div.dokuwiki .title a:visited, div.dokuwiki .title a:hover, div.dokuwiki .title a:active {
+  color: white;
+  text-decoration:none;
+}
+
+div.dokuwiki div.header div.logo {
+  float: right;
+  background-image: url(images/tus_header_logo.png);
+  background-repeat: no-repeat;	
+  background-position: top left ; 
+  height: 86px;
+  width: 86px;
+  margin-right: 20px;
+  overflow: hidden;
+}
+
+div.dokuwiki a#dokuwiki__top {
+  float : left;
+  margin-top : 28px;
+  margin-left : 20px;
+  font-family : helvetica;
+  font-size : 24px;
+  font-weight: bolder;
+  color: white;
+}
+
+div.dokuwiki .logo a:link, div.dokuwiki .logo a:visited, div.dokuwiki .logo a:hover, div.dokuwiki .logo a:active {
+  color: __rg_logo_color__;
+  text-decoration:none;
+  font-variant:small-caps;
+  letter-spacing:2pt;
+}
+
+div.dokuwiki div.sideandpage {
+  margin-top: 10px;
+}
+
+/* the document */
+div.dokuwiki div.page {
+  text-align: justify;
+
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 30px;
+  padding-top : 5px;
+  margin-left : 20px;
+}
+
+/* the sidebar */
+div.dokuwiki div.sidebar {
+  background-color: __rg_sidebar__ ;
+  padding-top: 0px;
+  padding-bottom: 5px;
+
+  overflow: hidden; 
+  font-size : 80% ;
+}
+
+/* the search box */
+div.dokuwiki div.searchbarandshadows {
+  margin-top: 4px ;
+}
+
+div.dokuwiki div.searchbar {
+  background-color: __rg_search__ ;
+  border-style : solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: __rg_search_border__ ;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align : left ; 
+  font-size : 80% ;
+}
+
+div.dokuwiki div.userbar {
+  background-color: __rg_userbar__ ;
+  font-size: 80% ;
+  background-image: url(images/sidebar_background.png);
+  background-repeat: no-repeat;
+  padding-bottom : 15px;
+  padding-top: 4px;
+}
+
+div.dokuwiki div.userbarheading {
+  border-bottom: 1px solid __tus_text_color__;
+  color: __tus_text_color__;
+  width: 100%;
+  margin-bottom: 7px;
+  font-size: 10px;
+  padding-top: 0.5em;
+  font-weight: bold;
+}
+
+div.dokuwiki div#sidebarActionTableId,
+div.dokuwiki div#pageActionTableId,
+div.dokuwiki div#wikiActionTableId,
+div.dokuwiki div#userActionTableId,
+div.dokuwiki div#submitActionTableId {
+  margin-left : 30px;
+  padding-top : 4px;
+}
+
+div.dokuwiki div#wikiActionTableId {
+  margin-top : 10px;
+}
+
+div.dokuwiki div.userbarstrip {
+  margin-left : 20px;
+  margin-right : 35px;
+  border-style : solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: __rg_userbar_border__ ;
+  padding-top: 15px; 
+  color : __rg_userbar_color__;
+  
+  font-variant:small-caps;
+  font-weight: bolder;
+  font-size: 100% ; 
+  cursor: pointer; 
+}
+
+div.dokuwiki div.userbarstrip:hover {
+/*  background-color: __rg_sidebar__ ; */
+}
+
+/* the left column ( sidebar,  search box, action box) */
+div.dokuwiki div.sideleft {
+  width: 220px;
+  overflow: hidden;
+}
+
+div.dokuwiki div.mainright {
+}
+
+div.dokuwiki div.mainfull {
+  width: 90;
+  float: center;
+}
+
+/* hack needed to avoid some unwanted extra space between boxes and their shadows */
+div.dokuwiki div.searchbarandshadows table,
+div.dokuwiki div.userbarandshadows table,
+div.dokuwiki div.sidebar table {
+  margin : 0;
+  padding: 0;
+}
+
+
+/* ---------------  status bar ---------------- */
+div.dokuwiki .bar {
+  background-color: __rg_status_background__;
+  background-image: url(images/tus_footer_background.png);
+  background-repeat: repeat-x;
+  color: __tus_footer_color__;
+  text-align: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  width: 100%;
+  font-size : 80%;
+  clear: both;
+  overflow: hidden;
+  height: 50px;
+}
+
+div.dokuwiki .bar-left {
+  float: left;
+}
+
+div.dokuwiki .bar-right {
+  float: right;
+  text-align: right;
+}
+
+div.dokuwiki #bar__bottom {
+  margin-bottom:3px;
+}
+
+/* ------------- File Metadata ----------------------- */
+
+div.dokuwiki div.meta {
+  clear: both;
+  margin-top: 1em;
+  color: __text_alt__;
+  font-size: 70%;
+}
+
+div.dokuwiki div.meta div.user {
+  float: left;
+  margin-left : 20px;
+}
+
+div.dokuwiki div.meta div.doc {
+  text-align: right;
+}
