@@ -4,6 +4,7 @@
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Benjamin Förster <dw@benni.dfoerster.de>
+ * @author	Sebastian Knapp <sebastian.knapp@bossmail.de>
  */
 // must be run within Dokuwiki
 if(!defined('DOKU_INC')) die();
@@ -17,264 +18,206 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
     /* EINSTELLUNGEN */
     function __construct() {
 		# Welche Saisons sind gespeichert?
-		$this->all_seasons = Array("2010", "2011", "2012", "2013", "2014");
+		$this->all_seasons = Array("2015");
 		
 		# Aktuelle Saison
-		$this->season = "2014";
+		$this->season = "2015";
+
+		# API Key 
+		$this->apiKey = "be80c43d-4bd5-49ff-8ba6-46ba1565c462";
 		
         $this->matches = array(
             # Tag auf entsprechende Methode verweisen
-            'nvvTabelle' => '_printTabelle',
-            'nvvTabelleKlein' => '_printTabelleKlein',
-            'nvvGespielt' => '_printGespielt',
-            'nvvGespieltKlein' => '_printGespieltKlein',
-            'nvvVorschau' => '_printVorschau',
-            'nvvVorschauNext' => '_printVorschauNext',
-            'nvvPlatz' => '_printTabellenplatz',
-            'nvvPlaetze' => '_printTabellenplaetze',
-            'nvvPlatzKurz' => '_printTabellenplatzKurz',
+            'nvvTabelle' => '_printRankings',
+            'nvvTabelleKlein' => '_printRankingsSmall',
+            'nvvGespielt' => '_printLastGames',
+            'nvvGespieltKlein' => '_printLastGamesSmall',
+            'nvvVorschau' => '_printNextGames',
+            'nvvVorschauNext' => '_printNextGame',
+            'nvvPlatz' => '_printRankingPlace',
+            'nvvPlaetze' => '_printRankingPlaces',
+            'nvvPlatzKurz' => '_printRankingPlaceShort',
             );
+            
         $this->teams = array(
             # unsere Teams
-			"2010" => Array(
-				"d1" => Array("id"=>"1643", "name"=>"TuS Rüppurr",
-	                        "team" => 'd1', "tname"=>'Damen 1',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"d2" => Array("id"=>"1642", "name"=>"TuS Rüppurr II",
-	                        "team" => 'd2', "tname"=>'Damen 2',
-							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga'),
-				"h1" => Array("id"=>"1657", "name"=>"VSG Ettl/Rüppurr I",
+			"2015" => Array(
+				"h1" => Array("id"=>"4260811", "name"=>"VSG Ettlingen/Rüppurr",
 	                        "team" => 'h1', "tname"=>'Herren 1',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"h2" => Array("id"=>"1657", "name"=>"VSG Ettl/Rüppurr II",
+							'liga_kurz'=>'VL', 'liga_lang' => 'Verbandsliga',"liga_id"=>"4241522"),
+				"h2" => Array("id"=>"4260850", "name"=>"VSG Ettlingen/Rüppurr 2",
 	                        "team" => 'h2', "tname"=>'Herren 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"h3" => Array("id"=>"1665", "name"=>"VSG Ettlingen/Rüppurr III",
+							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga',"liga_id"=>"4241513"),
+				"h3" => Array("id"=>"4260886", "name"=>"VSG Ettlingen/Rüppurr 3",
 	                        "team" => 'h3', "tname"=>'Herren 3',
-							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga'),
-				"h4" => Array("id"=>"1689", "name"=>"VSG Ettlingen/Rüppurr IV",
-	                        "team" => 'h4', "tname"=>'Herren 4',
-							'liga_kurz'=>'BK', 'liga_lang' => 'Bezirksklasse'),
-			 ),
-			"2011" => Array(
-				"h1" => Array("id"=>"1751", "name"=>"VSG Ettlingen/Rüppurr",
-	                        "team" => 'h1', "tname"=>'Herren 1',
-							'liga_kurz'=>'VL', 'liga_lang' => 'Verbandsliga'),
-				"h2" => Array("id"=>"1712", "name"=>"VSG Ettlingen/Rüppurr 2",
-	                        "team" => 'h2', "tname"=>'Herren 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"h3" => Array("id"=>"1762", "name"=>"VSG Ettlingen/Rüppurr 3",
-	                        "team" => 'h3', "tname"=>'Herren 3',
-							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga'),
-				"d1" => Array("id"=>"1696", "name"=>"TuS Rüppurr",
+							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga',"liga_id"=>"4241504"),
+				"d1" => Array("id"=>"4241321", "name"=>"VSG Ettlingen/Rüppurr",
 	                        "team" => 'd1', "tname"=>'Damen 1',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"d2" => Array("id"=>"1700", "name"=>"TuS Rüppurr 2",
+							'liga_kurz'=>'OL', 'liga_lang' => 'Oberliga', "liga_id"=>"4241287"),
+				"d2" => Array("id"=>"4253074", "name"=>"VSG Ettlingen/Rüppurr 2",
 	                        "team" => 'd2', "tname"=>'Damen 2',
-							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga'),
-				"d3" => Array("id"=>"1710", "name"=>"TuS Rüppurr 3",
-	                        "team" => 'd3', "tname"=>'Damen 3',
-							'liga_kurz'=>'KL', 'liga_lang' => 'Kreisliga'),
-			 ),
-			"2012" => Array(
-				"h1" => Array("id"=>"1785", "name"=>"VSG Ettlingen/Rüppurr",
-	                        "team" => 'h1', "tname"=>'Herren 1',
-							'liga_kurz'=>'VL', 'liga_lang' => 'Verbandsliga'),
-				"h2" => Array("id"=>"1838", "name"=>"VSG Ettl./Rüppurr 2",
-	                        "team" => 'h2', "tname"=>'Herren 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"h3" => Array("id"=>"1835", "name"=>"VSG Ettl./Rüppurr 3",
-	                        "team" => 'h3', "tname"=>'Herren 3',
-							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga'),
-				"d1" => Array("id"=>"1837", "name"=>"VSG Ettl./Rüppurr 1",
-	                        "team" => 'd1', "tname"=>'Damen 1',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"d2" => Array("id"=>"1837", "name"=>"VSG Ettl./Rüppurr 2",
-	                        "team" => 'd2', "tname"=>'Damen 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"d3" => Array("id"=>"1836", "name"=>"VSG Ettl./Rüppurr 3",
-	                        "team" => 'd3', "tname"=>'Damen 3',
-							'liga_kurz'=>'KL', 'liga_lang' => 'Kreisliga'),
-			 ),
-			"2013" => Array(
-				"h1" => Array("id"=>"0", "name"=>"VSG Ettlingen/Rüppurr",
-	                        "team" => 'h1', "tname"=>'Herren 1',
-							'liga_kurz'=>'OL', 'liga_lang' => 'Oberliga'),
-				"h2" => Array("id"=>"31", "name"=>"VSG Ettlingen/Rüppurr2",
-	                        "team" => 'h2', "tname"=>'Herren 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"h3" => Array("id"=>"34", "name"=>"VSG Ettlingen/Rüppurr3",
-	                        "team" => 'h3', "tname"=>'Herren 3',
-							'liga_kurz'=>'BL', 'liga_lang' => 'Bezirksliga'),
-				"d1" => Array("id"=>"09", "name"=>"VSG Ettlingen/Rüppurr",
-	                        "team" => 'd1', "tname"=>'Damen 1',
-							'liga_kurz'=>'VL', 'liga_lang' => 'Verbandsliga'),
-				"d2" => Array("id"=>"11", "name"=>"VSG Ettlingen/Rüppurr2",
-	                        "team" => 'd2', "tname"=>'Damen 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"d3" => Array("id"=>"18", "name"=>"VSG Ettlingen/Rüppurr3",
-	                        "team" => 'd3', "tname"=>'Damen 3',
-							'liga_kurz'=>'BK', 'liga_lang' => 'Bezirksklasse'),
-			 ),
-			"2014" => Array(
-				"h1" => Array("id"=>"08", "name"=>"VSG Ettlingen/Rüppurr",
-	                        "team" => 'h1', "tname"=>'Herren 1',
-							'liga_kurz'=>'VL', 'liga_lang' => 'Verbandsliga'),
-				"h2" => Array("id"=>"31", "name"=>"VSG Ettlingen/Rüppurr2",
-	                        "team" => 'h2', "tname"=>'Herren 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-				"h3" => Array("id"=>"36", "name"=>"VSG Ettlingen/Rüppurr3",
-	                        "team" => 'h3', "tname"=>'Herren 3',
-							'liga_kurz'=>'BK', 'liga_lang' => 'Bezirksklasse'),
-				"d1" => Array("id"=>"01", "name"=>"VSG Ettlingen/Rüppurr",
-	                        "team" => 'd1', "tname"=>'Damen 1',
-							'liga_kurz'=>'OL', 'liga_lang' => 'Oberliga'),
-				"d2" => Array("id"=>"11", "name"=>"VSG Ettlingen/Rüppurr2",
-	                        "team" => 'd2', "tname"=>'Damen 2',
-							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga'),
-			 ),
+							'liga_kurz'=>'LL', 'liga_lang' => 'Landesliga',"liga_id"=>"4241507"),
+				"d3" => Array("id"=>"4254771", "name"=> "VSG Ettlingen/Rüppurr 3",
+				"team" => 'd3', "tname"=>'Damen 3',
+							'liga_kurz'=>'KL', 'liga_lang' => 'Kreisliga',"liga_id"=>"4241462"),
+		),
 	        );
         $this->replace = array(
             # Zu lange Namen in der kleinen Matchvorschau kürzen
-            "TuS Durmersheim II" 		=> "Durmersheim II",
-            "TuS Durmersheim III"	 	=> "Durmersheim III",
-            "TuS Durmersheim" 			=> "Durmersheim",
-            "TuS Durmersheim 2" 		=> "Durmersheim 2",
-            "TuS Durmersheim 3" 		=> "Durmersheim 3",
-            "VSG Kleinsteinbach" 		=> "Kleinsteinbach",
-            "VSG Kleinsteinbach 2" 		=> "Kleinsteinbach 2",
-            "VSG Ettl/Rüppurr I" 		=> "Ettl/Rüppurr I",
-			"VSG Ettlingen/Rüppurr" 	=> "Ettl/Rüppurr",
-			"VSG Ettl./Rüppurr 1" 		=> "Ettl/Rüppurr 1",
-            "VSG Ettl/Rüppurr II" 		=> "Ettl/Rüppurr II",
-			"VSG Ettlingen/Rüppurr 2" 	=> "Ettl/Rüppurr 2",
-			"VSG Ettl./Rüppurr 2" 		=> "Ettl/Rüppurr 2",
-            "VSG Ettlingen/Rüppurr III" => "Ettl/Rüppurr III",
-			"VSG Ettl./Rüppurr 3" 		=> "Ettl/Rüppurr 3",
-			"VSG Ettlingen/Rüppurr 3" 	=> "Ettl/Rüppurr 3",
-            "VSG Ettlingen/Rüppurr IV" 	=> "Ettl/Rüppurr IV",
-            "SV Ka/Beiertheim III" 		=> "Beiertheim III",
-            "TSV Mühlh./Würm" 			=> "Mühlh./Würm",
-			"TSV Mühlhausen/Würm" 		=> "Mühlh./Würm",
-			"SR Yburg Steinbach" 		=> "SR Yb. Steinb.",
-			"SG Sinsheim/Waibstadt" 	=> "Sinsheim/Waib",
-			"HTV/USC Heidelberg 2"		=> "Heidelberg 2",
-			"VSG Mannheim DJK/MVC 2"	=> "Mannheim 2",
-			"VSG Mannheim DJK/MVC 3"	=> "Mannheim 3",
+           	"TuS Durmersheim II" 				=> "Durmersheim II",
+           	"TuS Durmersheim III"	 			=> "Durmersheim III",
+           	"TuS Durmersheim" 					=> "Durmersheim",
+           	"TuS Durmersheim 2" 				=> "Durmersheim 2",
+           	"TuS Durmersheim 3" 				=> "Durmersheim 3",
+            "VSG Kleinsteinbach" 				=> "Kleinsteinbach",
+           	"VSG Kleinsteinbach 2" 				=> "Kleinsteinbach 2",
+			"VSG Kleinsteinbach 3"				=> "Kleinsteinbach 3",
+			"SR Yburg Steinbach"				=> "Yburg Steinbach",
+           	"VSG Ettl/Rüppurr I" 				=> "Ettl/Rüppurr I",
+			"VSG Ettlingen/Rüppurr" 			=> "Ettl/Rüppurr",
+			"VSG Ettl./Rüppurr 1" 				=> "Ettl/Rüppurr 1",
+           	"VSG Ettl/Rüppurr II" 				=> "Ettl/Rüppurr II",
+			"VSG Ettlingen/Rüppurr 2" 			=> "Ettl/Rüppurr 2",
+			"VSG Ettl./Rüppurr 2" 				=> "Ettl/Rüppurr 2",
+            "VSG Ettlingen/Rüppurr III" 		=> "Ettl/Rüppurr III",
+			"VSG Ettl./Rüppurr 3" 				=> "Ettl/Rüppurr 3",
+			"VSG Ettlingen/Rüppurr 3" 			=> "Ettl/Rüppurr 3",
+        	"VSG Ettlingen/Rüppurr IV" 			=> "Ettl/Rüppurr IV",
+			"SV KA-Beiertheim 2"				=> "Beiertheim 2",
+           	"SV Ka/Beiertheim III" 				=> "Beiertheim III",
+           	"TSV Mühlh./Würm" 					=> "Mühlh./Würm",
+			"TSV Mühlhausen/Würm" 				=> "Mühlh./Würm",
+			"SG Sinsheim/Waibstadt/Helmstadt" 	=> "Sins/Waib/Helm",
+			"HTV/USC Heidelberg 2"				=> "Heidelberg 2",
+			"VSG Mannheim DJK/MVC 2"			=> "Mannheim 2",
+			"VSG Mannheim DJK/MVC 3"			=> "Mannheim 3",
+			"VSG Ubstadt/Forst"					=> "Ubstadt/Forst",
+			"VSG Kleinsteinbach"				=> "Kleinsteinbach",
+			"VC KAMMACHI Bühl"					=> "KAMMACHI Bühl",
+			"SG Ersingen-Ispringen-Pforzheim 2"	=> "Ers-Ispr-Pf 2",
             );
 	    $this->kuerzel = array(
 	    	# Kürzel für die kleine Tabelle
 			
 			# VL Herren
-			"SG Sinsheim/Waibstadt"		=> "Sinsh/Waib",
-			"HTV/USC Heidelberg 2"		=> "Heidelberg 2",
-			"TSG Weinheim"				=> "Weinheim",
-			"VSG Mannh. DJK/MVC 2"		=> "Mannheim 2",
-			"VSG Mannh. DJK/MVC 1"		=> "Mannheim 1",
-			"VSG Mannheim DJK/MVC 2"	=> "Mannheim 2",
-			"SSC Karlsruhe"				=> "SSC Ka",
-			"VSG Ettlingen/Rüppurr"		=> "Rüppurr",
-			"VSG Ettlingen/Rüppurr 1"	=> "Rüppurr 1",
-			"VSG Mannheim DJK/MVC 3"	=> "Mannheim 3",
-			"TV Flehingen"				=> "Flehingen",
-			"TG Ötigheim"				=> "Ötigheim",
-			"TV Eberbach"				=> "Eberbach",
-			"TSV  Handschuhsheim"		=> "Handschuh",
+			"SG Sinsheim/Waibstadt/Helmstadt"	=> "Sins/Waib/Helm",
+			"SG HTV/USC Heidelberg 2"			=> "Heidelberg 2",
+			"TSG Weinheim"						=> "Weinheim",
+			"VSG Mannh. DJK/MVC 2"				=> "Mannheim 2",
+			"VSG Mannh. DJK/MVC 1"				=> "Mannheim 1",
+			"VSG Mannheim DJK/MVC 2"			=> "Mannheim 2",
+			"VSG Ubstadt/Forst"					=> "Ubstadt/Forst",
+			"SSC Karlsruhe"						=> "SSC Ka",
+			"VSG Ettlingen/Rüppurr"				=> "Rüppurr",
+			"VSG Ettlingen/Rüppurr 1"			=> "Rüppurr 1",
+			"VSG Mannheim DJK/MVC 3"			=> "Mannheim 3",
+			"TV Flehingen"						=> "Flehingen",
+			"TG Ötigheim"						=> "Ötigheim",
+			"TV Eberbach"						=> "Eberbach",
+			"TSV Handschuhsheim"				=> "Handschuh",
+			"TS Durlach"						=> "Durlach",
 
-	    	
 	        # LL Herren
-	        "VSG Ettl/Rüppurr II"   	=> "Rüpp II",
-			"VSG Ettlingen/Rüppurr 2" 	=> "Rüppurr 2",
-			"VSG Ettl./Rüppurr 2" 		=> "Rüppurr 2",
-			"TS Durlach 2"				=> "Durlach 2",
-			"SVK Beiertheim"			=> "Beiertheim",
-	        "SSC Karlsruhe I"       	=> "SSC I",
-	        "TuS Durmersheim III"   	=> "Durm III",
-	        "TuS Durmersheim 3"   		=> "Durmersh 3",
-	        "VSG Ettl/Rüppurr I"    	=> "Rüpp I",
-	        "FT Forchheim"          	=> "Forchheim",
-	        "SSC Karlsruhe II"     		=> "SSC II",
-	        "SSC Karlsruhe 2"			=> "SSC Ka 2",
-	        "TS Durlach II"         	=> "Durl II",
-	        "TV Neuweier"           	=> "Neuweier",
-	        "TV Ersingen"           	=> "Ersingen",
-	        "TSV Ubstadt"           	=> "Ubstadt",
-	        "VSG Kleinsteinbach"    	=> "KlSteinbach",
-		 	"TV Eppingen"				=> "Eppingen",
-			"TSG Blankenloch 2"			=> "Blankenlo 2",
-
+	        "VSG Ettl/Rüppurr II"   			=> "Rüpp II",
+			"VSG Ettlingen/Rüppurr 2" 			=> "Rüppurr 2",
+			"VSG Ettl./Rüppurr 2" 				=> "Rüppurr 2",
+			"TS Durlach 2"						=> "Durlach 2",
+			"SVK Beiertheim"					=> "Beiertheim",
+	        "SSC Karlsruhe I"       			=> "SSC I",
+	        "TuS Durmersheim III"   			=> "Durm III",
+	        "TuS Durmersheim 3"   				=> "Durmersh 3",
+	        "VSG Ettl/Rüppurr I"    			=> "Rüpp I",
+	        "FT Forchheim"          			=> "Forchheim",
+	        "SSC Karlsruhe II"     				=> "SSC II",
+	        "SSC Karlsruhe 2"					=> "SSC Ka 2",
+	        "TS Durlach II"         			=> "Durl II",
+	        "TV Neuweier"           			=> "Neuweier",
+	        "TV Ersingen"           			=> "Ersingen",
+	        "TSV Ubstadt"           			=> "Ubstadt",
+	        "VSG Kleinsteinbach"    			=> "KlSteinbach",
+			"TV Eppingen"						=> "Eppingen",
+			"TSG Blankenloch 2"					=> "Blankenlo 2",
+			"SC Wettersbach"					=> "Wettersbach",
+			"TSG Wiesloch"						=> "Wiesloch",
+			"AVC St. Leon-Rot"					=> "Leon-Rot",
 	        
 	        # BL Herren
-	        "VSG Ettlingen/Rüppurr III" => "Rüp III",
-			"VSG Ettlingen/Rüppurr 3" 	=> "Rüppurr 3",
-			"VSG Ettl./Rüppurr 3" 		=> "Rüppurr 3",
-	        "VC Kuppenheim"         	=> "Kuppenh",
-	        "SC Wettersbach"        	=> "Wettersbach",
-	        "TSV Weingarten"        	=> "Weingarten",
-	        "TV Forst"              	=> "Forst",
-	        "TV Pforzheim II"       	=> "Pforzh II",
-			"TV Neuweier 2"				=> "Neuweier 2",
-			"TS Durlach 3"				=> "Durlach 3",
-			"Rastatter TV"				=> "Rastatter TV",
-			"KIT Sport-Club 2010"		=> "KIT SC",
-			"SSC Karlsruhe 3"			=> "SSC Ka 3",
-		 	"TSG Blankenloch 3"			=> "Blankenlo 3",
-		 	"VC Kammachi Bühl"			=> "VC Bühl",
-
-
+	        "VSG Ettlingen/Rüppurr III" 		=> "Rüp III",
+			"VSG Ettlingen/Rüppurr 3" 			=> "Rüppurr 3",
+			"VSG Ettl./Rüppurr 3" 				=> "Rüppurr 3",
+	        "VC Kuppenheim"         			=> "Kuppenh",
+	        "TSV Weingarten"        			=> "Weingarten",
+	        "TV Forst"              			=> "Forst",
+	        "TV Pforzheim II"       			=> "Pforzh II",
+			"TV Neuweier"						=> "Neuweier",
+			"TS Durlach 3"						=> "Durlach 3",
+			"Rastatter TV"						=> "Rastatter TV",
+			"KIT Sport-Club 2010"				=> "KIT SC",
+			"SSC Karlsruhe 4"					=> "SSC Ka 4",
+			"TSG Blankenloch 3"					=> "Blankenlo 3",
+			"VC KAMMACHI Bühl"					=> "VC Bühl",
+			"TV Flehingen 2"					=> "Fleh 2",
+			"TV Öschelbronn"					=> "Öschelbr",
+	        "VSG Kleinsteinbach 2"    			=> "KlSteinb 2",
 	        
 	        # LL Damen
-	        "DJK Bruchsal"          	=> "Bruchsal",
-			"VSG Ettl./Rüppurr 1" 		=> "Rüppurr 1",
-			"VSG Ettl./Rüppurr 2" 		=> "Rüppurr 2",
-	        "SSC Karlsruhe II"      	=> "SSC II",
-	        "SG Du/Wett"           		=> "Du/Wett",
-			"VSG DuWEtt"				=> "DuWEtt",
-	        "TuS Rüppurr"           	=> "Rüppurr",
-	        "VSG Kleinsteinbach"  	 	=> "KlSteinbach",
-	        "1. Ispringer VV"       	=> "Ispringen",
-	        "TB Pforzheim"          	=> "Pforzheim",
-	        "TV Brötzingen II"      	=> "Brötz II",
-	        "TV Brötzingen 2"      		=> "Brötzing 2",
-	        "SR Yb. Steinbach"      	=> "Yb. Steinb.",
-			"SR Yburg Steinbach"		=> "Yb. Steinb.",
-			"TSG Wiesloch 2"			=> "Wiesloch 2",
-			"TV Bretten"				=> "Bretten",
-			"SVK Beiertheim 3"			=> "Beierthe 3",
-		 	"VC Eppingen"				=> "Eppingen",
+	        "DJK Bruchsal"          			=> "Bruchsal",
+			"VSG Ettl./Rüppurr 1" 				=> "Rüppurr 1",
+			"VSG Ettl./Rüppurr 2" 				=> "Rüppurr 2",
+	        "SSC Karlsruhe II"      			=> "SSC II",
+	        "SG Du/Wett"           				=> "Du/Wett",
+			"VSG DuWEtt"						=> "DuWEtt",
+	        "TuS Rüppurr"           			=> "Rüppurr",
+	        "1. Ispringer VV"       			=> "Ispringen",
+	        "TB Pforzheim"          			=> "Pforzheim",
+	        "TV Brötzingen II"      			=> "Brötz II",
+	        "TV Brötzingen 2"      				=> "Brötzing 2",
+	        "SR Yb. Steinbach"      			=> "Yb. Steinb.",
+			"SR Yburg Steinbach"				=> "Yb. Steinb.",
+			"TSG Wiesloch 2"					=> "Wiesloch 2",
+			"TV Bretten"						=> "Bretten",
+			"SVK Beiertheim 3"					=> "Beierthe 3",
+			"VC Eppingen"						=> "Eppingen",
+			"VC Kuppenheim"						=> "Kuppenh",
+			"TSV Mühlhausen/Würm"				=> "Mühlh/Würm",
+			"TV Waibstadt"						=> "Waibstadt",
+			"KIT Sport-Club 2010"				=> "KIT",
+			"SV Sinsheim 2"						=> "Sinsh 2",
 	        
 	        # BL Damen
-	       	"SV Ka/Beiertheim III" 		=> "Beierth III",
-	        "TV Bretten II"         	=> "Bretten II",
-			"TV Bretten 2"				=> "Bretten 2",
-	        "TSV Mühlh./Würm"       	=> "Mü/Würm",
-	        "TuS Rüppurr II"        	=> "Rüpp II",
-			"TuS Rüppurr 2"				=> "Rüppurr 2",
-	        "TV Hochstetten"        	=> "Hochstet",
-	        "TSG Bruchsal"          	=> "Bruchsal",
-	        "TV Au/Rhein"           	=> "Au/Rhein",
-	        "DJK Bruchsal II"       	=> "Bruchs II",
-	        "SG DuWett II"          	=> "DuWett II",
-			"TSV Knittlingen"			=> "Knittlingen",
-			"TuS Durmersheim"			=> "Durmersheim",
-			"VSG Kleinsteinbach 2"		=> "KlSteinbach 2",
-			"TSV Mühlhausen/Würm"		=> "Mühlh/Würm",
-			"TV Au am Rhein"			=> "Au am Rhein",
+	       	"SV Ka/Beiertheim III" 				=> "Beierth III",
+	        "TV Bretten II"         			=> "Bretten II",
+			"TV Bretten 2"						=> "Bretten 2",
+	        "TSV Mühlh./Würm"       			=> "Mü/Würm",
+	        "TuS Rüppurr II"        			=> "Rüpp II",
+			"TuS Rüppurr 2"						=> "Rüppurr 2",
+	        "TV Hochstetten"        			=> "Hochstet",
+	        "TSG Bruchsal"          			=> "Bruchsal",
+	        "TV Au/Rhein"           			=> "Au/Rhein",
+	        "DJK Bruchsal II"       			=> "Bruchs II",
+	        "SG DuWett II"          			=> "DuWett II",
+			"TSV Knittlingen"					=> "Knittlingen",
+			"TuS Durmersheim"					=> "Durmersheim",
+			"TSV Mühlhausen/Würm"				=> "Mühlh/Würm",
+			"TV Au am Rhein"					=> "Au am Rhein",
+			"Rastatter TV"						=> "Rastatt",
 			
 			# KL Damen
-	        "Rastatter TV 2"			=> "Rastatt 2",
-			"Post Südstadt Karlsruhe" 	=> "Post Südstadt",
-			"VC Kuppenheim 1"			=> "Kuppenheim",
-			"TuS Durmersheim 2"			=> "Durmersh 2",
-			"SR Yburg Steinbach 2"		=> "Yb Steinb 2",
-			"TuS Rüppurr 3"				=> "Rüppurr 3",
-			"VSG Ettl./Rüppurr 3" 		=> "Rüppurr 3",
-			"TS Steinmauern"			=> "Steinmauern",
-			"VSG Kleinsteinbach 3"		=> "KlSteinb 3",
-			"VSG Kleinsteinb. 3"		=> "KlSteinb 3",
-			"VC Kuppenheim 2"			=> "Kuppenhe 2",
-			"VC Königsbach"				=> "Königsbach",
-			"TG Ötigheim 2"				=> "Ötigheim 2",
+	        "Rastatter TV 2"					=> "Rastatt 2",
+			"Post Südstadt Karlsruhe" 			=> "Post Südstadt",
+			"VC Kuppenheim 1"					=> "Kuppenheim",
+			"TuS Durmersheim 2"					=> "Durmersh 2",
+			"SR Yburg Steinbach 2"				=> "Yb Steinb 2",
+			"TuS Rüppurr 3"						=> "Rüppurr 3",
+			"VSG Ettl./Rüppurr 3" 				=> "Rüppurr 3",
+			"TS Steinmauern"					=> "Steinmauern",
+			"VSG Kleinsteinbach 3"				=> "KlSteinb 3",
+			"VSG Kleinsteinb. 3"				=> "KlSteinb 3",
+			"VC Kuppenheim 2"					=> "Kuppenhe 2",
+			"VC Königsbach"						=> "Königsbach",
+			"TG Ötigheim 2"						=> "Ötigheim 2",
+			"VC Neureut 2"						=> "Neureut 2",
+			"SG Ersingen-Ispringen-Pforzheim 2"	=> "Ers-Isp-Pf 2"
 	        );
 	    
 	    # Datenstruktur für jede Saison aufbauen
@@ -292,8 +235,8 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
      */
     function getInfo(){
         return array(
-            'author' => 'Benjamin Förster',
-            'email'  => 'dw@benni.dfoerster.de',
+            'author' => 'Benjamin Förster & Sebastian Knapp',
+            'email'  => 'dw@benni.dfoerster.de, sebastian.knapp@bossmail.de',
             'date'   => '2010-11-23',
             'name'   => 'nvvConnect Plugin',
             'desc'   => 'Zeigt NVV-Ergebnisse und Tabelle an',
@@ -398,7 +341,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    }
     }
 	 
-    function _getTable($team, $season=false) {
+    function _getRankingsSorted($team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -411,12 +354,13 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    if($data == false) {
 	     $data = array();
 	     try {
-	      $xmlstr = $this->_holeDatei('tabelle_'.$team["id"].'.xml', $season);
+	      $xmlstr = $this->_getXmlString('rankings','matchSeriesId='.$team["liga_id"], $season);
 	      $xml = new SimpleXMLElement($xmlstr);
-	      foreach($xml->platz as $platz)
+	      foreach($xml->ranking as $ra)
           {
-           $v = get_object_vars($platz);
-           $data[$v["nr"]] = $v;
+           $ranking = get_object_vars($ra);
+           $ranking["team"] = get_object_vars($ranking["team"]);
+           $data[$ranking["place"]] = $ranking;
           }
 	     }
 	     catch(Exception $e) {
@@ -425,8 +369,9 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    }
         return $data;
     }
-	 
-    function _getGames($team, $season=false) {
+    
+	 # {{"all{matches}"},{"next{matches}"},{"last{matches}"}}
+    function _getMatches($team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -439,39 +384,54 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    if($data == false) {
 	     $data = array();
 	     try {
-	      $xmlstr = $this->_holeDatei('spiele_'.$team["id"].'.xml', $season);
+	      $xmlstr = $this->_getXmlString('matches','teamId='.$team["id"], $season);
 	      $xml = new SimpleXMLElement($xmlstr);
 	      
 	     $data = array(
-	        "alle" => array(),
-	        "vorschau" => array(),
-	        "gespielt" => array(),
+	        "all" => array(),
+	        "next" => array(),
+	        "last" => array(),
 	        );
 	     
-         foreach($xml->spiel as $sp)
+         foreach($xml->match as $ma)
          {
-            $v = get_object_vars($sp);
-            
-            if($v["teamheim"] == $team["name"]){
-		        $v["modus"] = "heim";
-		        $v["gegner"] = $v["teamgast"];
-	        } elseif($v["teamgast"] == $team["name"]) {
-		        $v["modus"]="gast";
-		        $v["gegner"] = $v["teamheim"];
-	        } else {
-	            continue;
-	        }
+            $match = get_object_vars($ma);
+            $match["location"] = get_object_vars($match["location"]);
+            $match["results"] = get_object_vars($match["results"]);
+            $match["results"]["sets"] = get_object_vars($match["results"]["sets"]);
+            /*
+            $match["results"]["sets"]["set"] = get_object_vars($match["results"]["sets"]["set"]);
+            */
 	        
-	        $datum = strtotime($v["datum"].', '.$v["uhrzeit"]);
+	        $date = strtotime($match["date"].', '.$match["time"]);
 	        
-	        $gruppe = (''==$v["ergebnis"])?'vorschau':'gespielt';
+	        $group = ($date<time())?"last":"next";
 	        
-	        $halle = $v["halle"];
+	        $location = $match["location"]["name"];
 	        
-	        foreach(array("alle", $gruppe) as $g) {
-	         $data[$g][$datum]["spiele"][] = $v;
-	         $data[$g][$datum]["datum"] = $datum;
-	         $data[$g][$datum]["halle"] = $halle;
+	        # define oponent and match type (home/false)
+	        foreach($match["team"] as $teamNew) {
+				$teamNew = get_object_vars($teamNew);
+				if($teamNew["name"] == $team["name"] ){
+					# wir
+					if($teamNew["number"] == 1) {
+						# Heimspiel
+						$mode = "home";
+					 }else {
+						 $mode = false;
+					 }
+				 } else {
+					 # opponent
+					 $opponent = $teamNew["name"];
+				 }
+			 }
+			 $match["mode"] = $mode;
+			 $match["opponent"] = $opponent;
+	        
+	        foreach(array("all", $group) as $g) {
+	         $data[$g][$date]["matches"][] = $match;
+	         $data[$g][$date]["date"] = $date;
+	         $data[$g][$date]["location"] = $location;
 	        }
           }
 	     }
@@ -482,7 +442,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
         return $data;
 	 }
 	 
-	 function _printTabellenplatzKurz(&$renderer, $team, $season=false) {
+	 function _printRankingPlaceShort(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -491,14 +451,15 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    # Gibt für $team den Tabellenplatz aus. Bsp.:
 	    # H1 (LL): Platz 5/9
 	    
-	    if($tabelle = $this->_getTable($team, $season))
+	    if($rankings = $this->_getRankingsSorted($team, $season))
 	    {
-	      foreach($tabelle as $p)
+	      foreach($rankings as $ranking)
           {
-           if($p["teamname"]==$team["name"]){
+           if($ranking["team"]["name"]==$team["name"]){
+			   # unser team --> gebe Position aus
            $renderer->doc .= strtoupper($team["team"]) . 
-                        ' ('.$team["liga_kurz"].'): Platz '.$p["nr"] . 
-                        '/' . count($tabelle).'<br />';
+                        ' ('.$team["liga_kurz"].'): Platz '.$ranking["place"] . 
+                        '/' . count($rankings).'<br />';
            break;
           }
          }
@@ -509,7 +470,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    }
 	 }
 	 
-	 function _printTabellenplaetze(&$renderer, $team, $season=false) {
+	 function _printRankingPlaces(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -525,20 +486,20 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
         
         $renderer->doc .= '<table class="nvvTabelleLeftmenu">'; 
             #'<tr><td>Team</td><td>Platz</td></tr>';
-        foreach($this->teams[$season] as $t)
+        foreach($this->teams[$season] as $teamNow)
         {
-         if($tabelle = $this->_getTable($t, $season)) {
-          foreach($tabelle as $p)
+         if($rankings = $this->_getRankingsSorted($teamNow, $season)) {
+          foreach($rankings as $ranking)
           {
-           if($p["teamname"]==$t["name"]){
-		    if($p["spiele"] == "0") {
-				$platz = "Sommerpause";
+           if($ranking["team"]["name"]==$teamNow["name"]){
+		    if($ranking["matchesPlayed"] == "0") {
+				$place = "Sommerpause";
 			}
 			else {
-				$platz = 'Platz '.$p["nr"] . '/' . count($tabelle);
+				$place = 'Platz '.$ranking["place"] . '/' . count($rankings);
 			}
-            $renderer->doc .= '<tr><td class="nvvTeam">' . strtoupper($t["team"]) . 
-                        ' ('.$t["liga_kurz"].'):</td><td class="nvvPlatz">'.$platz.'</td></tr>';
+            $renderer->doc .= '<tr><td class="nvvTeam">' . strtoupper($teamNow["team"]) . 
+                        ' ('.$teamNow["liga_kurz"].'):</td><td class="nvvPlatz">'.$place.'</td></tr>';
             break;
            }
           }
@@ -551,7 +512,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
         $renderer->doc .= '</table>';
 	 }
 	 
-	 function _printTabellenplatz(&$renderer, $team, $season=false) {
+	 function _printRankingPlace(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -560,13 +521,13 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    # Gibt für $team den aktuellen Tabellenplatz aus. Bsp.:
 	    # Platz 3 (10:6 Punkte)
 	    
-	    if($tabelle = $this->_getTable($team, $season))
+	    if($rankings = $this->_getRankingsSorted($team, $season))
 	    {
-	      foreach($tabelle as $p)
+	      foreach($rankings as $ranking)
           {
-           if($p["teamname"]==$team["name"]){
-           $renderer->doc .= '<p class="nvvTabellenplatz">Platz '.$p["nr"].' (' .
-                 $p["punkteplus"].':'.$p["punkteminus"] . ' Punkte)</p>';
+           if($ranking["team"]["name"]==$team["name"]){
+           $renderer->doc .= '<p class="nvvTabellenplatz">Platz '.$ranking["place"].' (' .
+                 $ranking["setWinScore"].':'.$ranking["setLoseScore"] . ' Punkte)</p>';
                  # . ', ' . $v["setplus"].':'.$v["setminus"] . ' S.)</p>';
            break;
           }
@@ -578,7 +539,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    }
 	 }
 	 
-	 function _printTabelle(&$renderer, $team, $season=false) {
+	 function _printRankings(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -592,29 +553,27 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
             '<td>S&auml;tze</td>' . 
             '<td>Ballpunkte</td></tr>';
 	    try {
-	     $tabelle = $this->_getTable($team, $season);
+	     $rankings = $this->_getRankingsSorted($team, $season);
          
          // Teams auslesen
          $s = '';
-          foreach($tabelle as $v)
+          foreach($rankings as $ranking)
           {
             #$v = get_object_vars($platz);
-			
-			$punkte = isset($v["punkteplus"])?$v["punkteplus"].':'.$v["punkteminus"]:$v["punkte"];
             
-            if($v["teamname"] == $team["name"]){
+            if($ranking["team"]["name"] == $team["name"]){
             $s .= '<tr class="wir">';
             } else { $s .= "<tr>"; }
 			
-			$teamname = utf8_decode($v["teamname"])?utf8_decode($v["teamname"]):$v["teamname"];
+			$teamname = utf8_decode($ranking["team"]["name"])?utf8_decode($ranking["team"]["name"]):$ranking["team"]["name"];
             $teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
 			
-            $s .=  '<td>' . $v["nr"] . '</td>' . 
+            $s .=  '<td>' . $ranking["place"] . '</td>' . 
             '<td class="team">' . $teamname . '</td>' . 
-            '<td>' . $v["spiele"] . '</td>' . 
-            '<td>' . $punkte.'</td>' . 
-            '<td>' . $v["setplus"] . ':' . $v["setminus"].'</td>' . 
-            '<td>' . $v["ballpunkteplus"] . ':' . $v["ballpunkteminus"].'</td>' . 
+            '<td>' . $ranking["matchesPlayed"] . '</td>' . 
+            '<td>' . $ranking["points"].'</td>' . 
+            '<td>' . $ranking["setPoints"].'</td>' . 
+            '<td>' . $ranking["ballPoints"].'</td>' . 
             '</tr>';
           }
           $renderer->doc .= $s;
@@ -622,12 +581,12 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
           $renderer->doc .= '</table>';
 	    }
 	    catch(Exception $e) {
-          $renderer->doc .= '<tr><td colspan="5">Fehler beim Auswerten der NVV-Daten.</td></tr></table>';
+          $renderer->doc .= '<tr><td colspan="5">Fehler beim Auswerten der "volleyball-baden.de"-Daten.</td></tr></table>';
           return;
          }
 	 }
 	 
-	 function _printTabelleKlein(&$renderer, $team, $season=false) {
+	 function _printRankingsSmall(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -651,40 +610,40 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
             '<td class="team">Team</td>' . 
             '<td class="spiele">Sp</td>' . 
             '<td class="punkte">Pkte</td></tr>';
-	    if($tabelle = $this->_getTable($team, $season))
+	    if($rankings = $this->_getRankingsSorted($team, $season))
 	    {
          
          // Teams auslesen
          $s = '';
-         foreach($tabelle as $v)
+         foreach($rankings as $ranking)
          {
           # sind wir es?
-          if($v["teamname"] == $team["name"]){
+          if($ranking["team"]["name"] == $team["name"]){
           $s .= '<tr class="wir">';
           } else { $s .= "<tr>"; }
 		  
-			$teamname = $this->_kurzerTeamname($v["teamname"]);
+			$teamname = $this->_shortTeamname($ranking["team"]["name"]);
 			$teamname = utf8_decode($teamname)?utf8_decode($teamname):$teamname;
             $teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
           
           # Teamnamen durch kürzere ersetzen
-          $s .=  '<td class="platz">'.$v["nr"].'</td>' . 
+          $s .=  '<td class="platz">'.$ranking["place"].'</td>' . 
           '<td class="team">' . $teamname .'</td>' . 
-          '<td class="spiele">' . $v["spiele"] . '</td>' . 
-          '<td class="punkte">' . $v["punkte"] . '</td>' . 
+          '<td class="spiele">' . $ranking["matchesPlayed"] . '</td>' . 
+          '<td class="punkte">' . $ranking["points"] . '</td>' . 
           '</tr>';
          }
          $renderer->doc .= $s;
 	    }
 	    else {
-          $renderer->doc .= '<tr><td colspan="5">Fehler beim Auswerten der NVV-Daten.</td></tr>';
+          $renderer->doc .= '<tr><td colspan="5">Fehler beim Auswerten der "volleyball-baden.de"-Daten.</td></tr>';
         }
 
         $renderer->doc .= '</table>';
 	 }
 	 
 	 
-	 function _printGespielt(&$renderer, $team, $season=false) {
+	 function _printLastGames(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -695,26 +654,22 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
         # VSG Ettlingen/Rüppurr III	- TV Forst	    3:2	(108:83)
         # VSG Ettlingen/Rüppurr III	- TSV Ubstadt	1:3	(84:95)
         
-	    if($spiele = $this->_getGames($team, $season))
+	    if($matches = $this->_getMatches($team, $season))
         {	        
 	        $s = '';
-	        if($spiele["gespielt"]) {
+	        if($matches["last"]) {
 	            $s .= '<table class="nvvSpieleGespielt">';
-	            foreach($spiele["gespielt"] as $t => $spieltag) {
-	                $modus = false;
-	                if(count($spieltag["spiele"]) == 2) {
-	                    $modus = "heim";
-	                }
-	                $s .= $this->_printSpieltagTitelzeile(4, $t, $spieltag["halle"], $modus);
-	                foreach($spieltag["spiele"] as $sp) {
-	                    $s .= $this->_printSpieltagSpiel(4, $sp);
+	            foreach($matches["last"] as $t => $matchDay) {
+	                $s .= $this->_printSpieltagTitelzeile(4, $t, $matchDay["location"], $matchDay["matches"][0]["mode"]);
+	                foreach($matchDay["matches"] as $match) {
+	                    $s .= $this->_printMatchdayGame(4, $match);
 	                }
 	            }
 	            $s .= '</table>';
 	        }
 			
 			# Spielplan noch nicht festgelegt?
-	        elseif(!$spiele["vorschau"]) {
+	        elseif(!$matches["next"]) {
 	            $s .= '<p class="keineSpiele">Spielplan noch nicht festgelegt.</p>';
 			}
 			else {
@@ -723,11 +678,11 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
             $renderer->doc .= $s;
 	    }
 	    else {
-	     $renderer->doc .= '<p class="nvvFehler">Konnte keine Verbindung zum NVV-Server herstellen.</p>';
+	     $renderer->doc .= '<p class="nvvFehler">Konnte keine Verbindung zum "volleyball-baden.de"-Server herstellen.</p>';
 	    }
      }
 	 
-	 function _printVorschau(&$renderer, $team, $season=false) {
+	 function _printNextGames(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -738,26 +693,22 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
         # VSG Ettlingen/Rüppurr III	- VSG Kleinsteinbach
         # VSG Ettlingen/Rüppurr III	- TV Forst
         
-	    if($spiele = $this->_getGames($team, $season))
+	    if($matches = $this->_getMatches($team, $season))
         {	        
 	        $s = '';
-	        if($spiele["vorschau"]) {
+	        if($matches["next"]) {
 	            $s .= '<table class="nvvSpieleVorschau">';
-	            foreach($spiele["vorschau"] as $t => $spieltag) {
-	                $modus = false;
-	                if(count($spieltag["spiele"]) == 2) {
-	                    $modus = "heim";
-	                }
-	                $s .= $this->_printSpieltagTitelzeile(2, $t, $spieltag["halle"], $modus);
-	                foreach($spieltag["spiele"] as $sp) {
-	                    $s .= $this->_printSpieltagSpiel(2, $sp);
+	            foreach($matches["next"] as $t => $matchDay) {
+	                $s .= $this->_printSpieltagTitelzeile(2, $t, $matchDay["location"], $matchDay["matches"][0]["mode"]);
+	                foreach($matchDay["matches"] as $match) {
+	                    $s .= $this->_printMatchdayGame(2, $match);
 	                }
 	            }
 	            $s .= '</table>';
 	        }
 			
 			# Spielplan noch nicht festgelegt?
-	        elseif(!$spiele["gespielt"]) {
+	        elseif(!$matches["last"]) {
 	            $s .= '<p class="keineSpiele">Spielplan noch nicht festgelegt.</p>';
 			}
 	        else {
@@ -766,13 +717,12 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
             $renderer->doc .= $s;
 	    }
 	    else {
-	     $renderer->doc .= '<p class="nvvFehler">Konnte keine Verbindung zum NVV-Server herstellen.</p>';
+	     $renderer->doc .= '<p class="nvvFehler">Konnte keine Verbindung zum "volleyball-baden.de"-Server herstellen.</p>';
 	     return;
 	    }
-	     
 	 }
 	 
-	 function _printVorschauNext(&$renderer, $team, $season=false) {
+	 function _printNextGame(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -782,27 +732,26 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    # 23.01.2011, 11:00 Uhr
         # gg. VC Kuppenheim
         
-	    if($spiele = $this->_getGames($team, $season))
+	    if($matches = $this->_getMatches($team, $season))
         {	     
 	        $s = '';
-	        if($spiele["vorschau"]) {
+	        if($matches["next"]) {
 	            $s .= '<p class="nvvNextSpieltag">';
-	            ksort($spiele["vorschau"]);
-	            $spieltag=reset($spiele["vorschau"]);
-                if(count($spieltag["spiele"]) == 2) {
-                    $modus = "heim";
+	            $matchDay=reset($matches["next"]);
+                if(count($matchDay["matches"]) == 2) {
+                    $modus = "home";
                 }
-                $s .= '<span class="nvvNextDatum">'.date("d.m.Y, H:i", $spieltag["datum"]);
+                $s .= '<span class="nvvNextDatum">'.date("d.m.Y, H:i", $matchDay["date"]);
                 $s .= ' Uhr</span><br />';
                 $s .= 'gg. <span class="nvvNextTeam">';
-                $s .= $this->_replace($spieltag["spiele"][0]["gegner"]).'</span>';
-                $s .= ($modus == "heim")?'<br />und <span class="nvvNextTeam">' . 
-                              $this->_replace($spieltag["spiele"][1]["gegner"]).'</span>' : '';
+                $s .= $this->_replace($matchDay["matches"][0]["opponent"]).'</span>';
+                $s .= ($mode == "home")?'<br />und <span class="nvvNextTeam">' . 
+                              $this->_replace($matchDay["matches"][1]["opponent"]).'</span>' : '';
 	            $s .= '</p>';
 	        }
 			
 			# Spielplan noch nicht festgelegt?
-	        elseif(!$spiele["gespielt"]) {
+	        elseif(!$matches["last"]) {
 	            $s .= '<p class="keineSpiele">Spielplan noch nicht festgelegt.</p>';
 			}
 	        else {
@@ -816,8 +765,8 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    }
 	 }
 	 
-	 
-	 function _printGespieltKlein(&$renderer, $team, $season=false) {
+	 #go on...
+	 function _printLastGamesSmall(&$renderer, $team, $season=false) {
 		# bestimme Saison?
 		if($season == false) {
 			$season = $this->season;
@@ -834,37 +783,33 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    # 0:3 VSG Kl.steinbach
 	    # 3:0 TV Pforzheim II
 	    
-	    if($spiele = $this->_getGames($team, $season))
+	    if($matches = $this->_getMatches($team, $season))
         {	        
-	        if($spiele["gespielt"]) {
+	        if($matches["last"]) {
 	        $s = '';
-	            $gespielt = $spiele["gespielt"];
-	            krsort($gespielt);
-	            foreach($gespielt as $t => $spieltag) {
+	            $last = $matches["last"];
+	            krsort($last);
+	            foreach($last as $t => $matchDay) {
 	                $s .= '<p class="nvvGespieltKlein">';
-	                $modus = false;
-	                if(count($spieltag["spiele"]) == 2) {
-	                    $modus = "heim";
-	                }
-	                $ergebnis = $spieltag["spiele"][0]["ergebnis"];
-	                $ergebnis = ($modus=="heim")?$ergebnis:strrev($ergebnis);
+	                $result = $matchDay["matches"][0]["results"]["setPoints"];
+	                $result = ($matchDay["matches"][0]["mode"]=="home")?$result:strrev($result);
 	                $s .= '<span class="nvvGespieltKleinDatum">' . 
-	                        date("d.m.Y, H:i", $spieltag["datum"]);
+	                        date("d.m.Y, H:i", $matchDay["date"]);
                     $s .= ' Uhr</span><br />';
-                    $s .= $ergebnis;
+                    $s .= $result;
                     $s .= ' <span class="nvvGespieltKleinGegner">';
-                    $s .= $this->_replace($spieltag["spiele"][0]["gegner"]).'</span>';
-                    $s .= ($modus == "heim")?'<br />' . 
-                                $spieltag["spiele"][1]["ergebnis"] . 
+                    $s .= $this->_replace($matchDay["matches"][0]["opponent"]).'</span>';
+                    $s .= (count($matchDay["matches"])==2)?'<br />' . 
+                                $matchDay["matches"][1]["results"]["setPoints"] . 
                                 ' <span class="nvvGespieltKleinGegner">' . 
-                                $this->_replace($spieltag["spiele"][1]["gegner"]).'</span>' : '';
+                                $this->_replace($matchDay["matches"][1]["opponent"]).'</span>' : '';
 	                $s .= '</p>';
 	            }
                 $renderer->doc .= $s;
 	        }
 			
 			# Spielplan noch nicht festgelegt?
-	        elseif(!$spiele["vorschau"]) {
+	        elseif(!$matches["next"]) {
 	            $s .= '<p class="keineSpiele">Spielplan noch nicht festgelegt.</p>';
 			}
             else {
@@ -873,51 +818,56 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	    }
 	    else {
 	     $renderer->doc .= '<p class="nvvFehler">Konnte keine Verbindung ' . 
-	                        'zum NVV-Server herstellen.</p>';
+	                        'zum "volleyball-baden.de"-Server herstellen.</p>';
 	    }
 	 }
 	 
-    function _printSpieltagTitelzeile($cols, $date, $halle, $modus) {
+    function _printSpieltagTitelzeile($cols, $date, $location, $mode) {
 	    # Zeige die Titelzeile für einen Spieltag
 	    
 	    return '<tr class="spieltag">' . 
 	        '<td colspan="'.$cols.'">' . 
 	        '<span class="datum">'.date("d.m.Y, H:i", $date).' Uhr</span>' . 
 	        # ' (<span class="ort">' . 
-	        # ( $modus == "heim" ? 'Heimspieltag' : 'Ausw&auml;rtsspieltag' ) . 
-	        ( $halle?' ('.$halle.')':'' ) . # '</span>)'
+	        # ( $mode == "home" ? 'Heimspieltag' : 'Ausw&auml;rtsspieltag' ) . 
+	        ( $location?' ('.$location.')':'' ) . # '</span>)'
 	        '</td></tr>';
 	}
 	  
-    function _printSpieltagSpiel($cols, $v) {
+    function _printMatchdayGame($cols, $match) {
 	    # Zeige ein Spiel des Spieltags
 	    
 	    # Satzpunkte
-	    $saetze = array();
-	    for($i=1;$i<=5;$i++) {
-	    	if(strlen($v["satz".$i]) > 3) { 
-		    	$saetze[$i] .= $v["satz".$i];
-		    }
+	    $setPoints = array();
+	    foreach($match["results"]["sets"]["set"] as $set) {
+			$set = get_object_vars($set);
+	    	$setPoints[$set["number"]]=$set["points"];
 	    }
 		
-		$teamname = $v["teamheim"];
-		$teamname = utf8_decode($teamname)?utf8_decode($teamname):$teamname;
-		$teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
-		$teamheim = $teamname;
-		
-		$teamname = $v["teamgast"];
-		$teamname = utf8_decode($teamname)?utf8_decode($teamname):$teamname;
-		$teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
-		$teamgast = $teamname;
+		$teamHome = "";
+		$teamGuest = "";
+		foreach($match["team"] as $team) {
+			$team = get_object_vars($team);
+			$teamname = $team["name"];
+			$teamname = utf8_decode($teamname)?utf8_decode($teamname):$teamname;
+			$teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
+			if($team["number"]==1) {
+				#heim team
+				$teamHome = $teamname;
+			} else {
+				#gast team
+				$teamGuest = $teamname;
+			}
+		}
 	    
-	    $ergebnis = ( $cols == 4 ) ? 
-	        '<td class="ergebnis">'.$v["ergebnis"].'</td>' . 
-	        '<td class="punkte">('. implode($saetze, ", ") . ')</td>':'';
-	    return '<tr class="spiel"><td class="'.($v["modus"]=="heim"?'wir':'gegner').'">' . 
-	        str_replace(' ', '&nbsp;', $teamheim) . 
+	    $result = ( $cols == 4 ) ? 
+	        '<td class="ergebnis">'.$match["results"]["setPoints"].'</td>' . 
+	        '<td class="punkte">((' . implode($setPoints, "),(") . '))</td>':'';
+	    return '<tr class="spiel"><td class="'.($match["mode"]=="home"?'wir':'gegner').'">' . 
+	        str_replace(' ', '&nbsp;', $teamHome) . 
 	        '</td><td class="' . ($v["modus"]=="gast"?'wir':'gegner').'">-&nbsp;' . 
-	        str_replace(' ', '&nbsp;', $teamgast) . 
-	        '</td>'.$ergebnis.'</tr>';
+	        str_replace(' ', '&nbsp;', $teamGuest) . 
+	        '</td>'.$result.'</tr>';
     }
 	  
     function _replace($teamname) {
@@ -930,7 +880,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
         }
     }
 
-    function _kurzerTeamname($teamname) {
+    function _shortTeamname($teamname) {
         # ersetze den Teamnamen durch sein Kürzel (kleine Tabelle)
         
         if(isset($this->kuerzel[$teamname])) {
@@ -942,39 +892,39 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
     }
     
     
-    function _holeDatei($dateiname, $season) {
+	# typ = {matches, rankings}
+	# parameter example: teamId=12345
+    function _getXmlString($typ, $parameter , $season) {
 		# bestimmte Saison?
 		if($season == false) {
 			$season = $this->season;
 		}
 		
 		# Ort der Datei auf dem Server
-    	$datei = 'lib/plugins/nvvConnect/cache/' . $season . '/' .$dateiname;
+    	$file = 'lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/' . $id . '.xml';
 		
 		# falls abgelaufene Saison: nicht mehr aktualisieren!
 		if($season != $this->season) {
-			$dateizeit = time(); # vorgeben, dass Datei topaktuell ist
+			$file_time = time(); # vorgeben, dass Datei topaktuell ist
 		}
-		elseif(is_file($datei)) {
-			$dateizeit = filectime($datei); # echtes Änderungsdatum auslesen
+		elseif(is_file($file)) {
+			$file_time = filectime($file); # echtes Änderungsdatum auslesen
 		}
 		else {
-			$dateizeit = 0; # Datei muss eh heruntergeladen werden
+			$file_time = 0; # Datei muss eh heruntergeladen werden
 		}
-    	if( ( !is_file($datei) || ( time() - $dateizeit > ( date("N")<6?60*60*3:60*15 ) ) )
-    		&& ( $neueDatei = file_get_contents(
-					"http://www.volleyball-nordbaden.de/xml_export/".$dateiname
-				) ) ) {
+    	if( ( !is_file($file) || ( time() - $file_time > ( date("N")<6?60*60*3:60*15 ) ) )
+    		&& ( $newFile = file_get_contents("https://www.volleyball-baden.de/xml/" . $typ . ".xhtml?apiKey=" . $this->apiKey . "&" . $parameter) ) ) {
 			# Mo-Fr: (date("N") = 1...5) => alle 3 Stunden aktualisieren
 			# Sa/So: (date("N") = 6/7) => alle 15 Minuten aktualisieren
 			
-			$fp = fopen($datei, "w");
-			fwrite($fp, $neueDatei);
+			$fp = fopen($file, "w");
+			fwrite($fp, $newFile);
 			fclose($fp);
-			return $neueDatei;
+			return $newFile;
     	}
-    	elseif( is_file($datei) ) {
-    		return file_get_contents($datei);
+    	elseif( is_file($file) ) {
+    		return file_get_contents($file);
     	}
     	else {
     		throw new Exception();
