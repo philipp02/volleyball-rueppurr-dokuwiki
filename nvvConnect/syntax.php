@@ -429,6 +429,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 				 } else {
 					 # opponent
 					 $opponent = $teamNew["name"];
+					 $opponent = htmlentities($opponent,ENT_XHTML)?htmlentities($opponent,ENT_XHTML):$opponent;
 				 }
 			 }
 			 $match["mode"] = $mode;
@@ -570,9 +571,9 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
             if($ranking["team"]["name"] == $team["name"]){
             $s .= '<tr class="wir">';
             } else { $s .= "<tr>"; }
-			
-			$teamname = utf8_decode($ranking["team"]["name"])?utf8_decode($ranking["team"]["name"]):$ranking["team"]["name"];
-            $teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
+            
+            $teamname = $ranking["team"]["name"];
+            $teamname = htmlentities($teamname,ENT_XHTML)?htmlentities($teamname,ENT_XHTML):$teamname;
 			
             $s .=  '<td>' . $ranking["place"] . '</td>' . 
             '<td class="team">' . $teamname . '</td>' . 
@@ -629,8 +630,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
           } else { $s .= "<tr>"; }
 		  
 			$teamname = $this->_shortTeamname($ranking["team"]["name"]);
-			$teamname = utf8_decode($teamname)?utf8_decode($teamname):$teamname;
-            $teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
+            $teamname = htmlentities($teamname,ENT_XHTML)?htmlentities($teamname,ENT_XHTML):$teamname;
           
           # Teamnamen durch kürzere ersetzen
           $s .=  '<td class="platz">'.$ranking["place"].'</td>' . 
@@ -855,8 +855,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 		foreach($match["team"] as $team) {
 			$team = get_object_vars($team);
 			$teamname = $team["name"];
-			$teamname = utf8_decode($teamname)?utf8_decode($teamname):$teamname;
-			$teamname = htmlentities($teamname)?htmlentities($teamname):$teamname;
+			$teamname = htmlentities($teamname,ENT_XHTML)?htmlentities($teamname,ENT_XHTML):$teamname;
 			if($team["number"]==1) {
 				#heim team
 				$teamHome = $teamname;
