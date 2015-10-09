@@ -160,6 +160,12 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 			"TV Öschelbronn"					=> "Öschelbr",
 	        "VSG Kleinsteinbach 2"    			=> "KlSteinb 2",
 	        
+	        # OL Damen
+	        "FT 1844 Freiburg"					=> "Freiburg",
+	        "TB Bad Dürrheim"					=> "Dürrheim",
+	        "USC Freiburg"						=> "Freiburg",
+	        "SV KA-Beiertheim 2"				=> "Beierth 2",
+	        
 	        # LL Damen
 	        "DJK Bruchsal"          			=> "Bruchsal",
 			"VSG Ettl./Rüppurr 1" 				=> "Rüppurr 1",
@@ -739,7 +745,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 	            $s .= '<p class="nvvNextSpieltag">';
 	            $matchDay=reset($matches["next"]);
                 if(count($matchDay["matches"]) == 2) {
-                    $modus = "home";
+                    $mode = "home";
                 }
                 $s .= '<span class="nvvNextDatum">'.date("d.m.Y, H:i", $matchDay["date"]);
                 $s .= ' Uhr</span><br />';
