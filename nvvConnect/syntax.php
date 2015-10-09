@@ -402,18 +402,16 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
          foreach($xml->match as $ma)
          {
             $match = get_object_vars($ma);
+            
             $match["location"] = get_object_vars($match["location"]);
             $match["results"] = get_object_vars($match["results"]);
             $match["results"]["sets"] = get_object_vars($match["results"]["sets"]);
-            /*
-            $match["results"]["sets"]["set"] = get_object_vars($match["results"]["sets"]["set"]);
-            */
 	        
 	        $date = strtotime($match["date"].', '.$match["time"]);
 	        
 	        $group = ($date<time())?"last":"next";
 	        
-	        $location = $match["location"]["name"];
+	        $location = htmlentities($match["location"]["name"],ENT_XHTML)?htmlentities($match["location"]["name"],ENT_XHTML):$match["location"]["name"];
 	        
 	        # define oponent and match type (home/false)
 	        foreach($match["team"] as $teamNew) {
