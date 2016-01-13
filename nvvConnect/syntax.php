@@ -904,6 +904,9 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 		}
 		
 		# Ort der Datei auf dem Server
+		if(!file_exists('lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/')) {
+			mkdir('lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/', 0777, true);
+		}
     	$file = 'lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/' . explode("=", $parameter, 2)[1] . '.xml';
 		
 		# falls abgelaufene Saison: nicht mehr aktualisieren!
