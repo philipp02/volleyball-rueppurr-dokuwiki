@@ -24,7 +24,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 		$this->season = "2015";
 
 		# API Key 
-		$this->apiKey = "be80c43d-4bd5-49ff-8ba6-46ba1565c462";
+		$this->apiKey = substr(file_get_contents('lib/plugins/nvvConnect/key.config'), 0, 36);
 		
         $this->matches = array(
             # Tag auf entsprechende Methode verweisen
@@ -904,7 +904,7 @@ class syntax_plugin_nvvConnect extends DokuWiki_Syntax_Plugin {
 		}
 		
 		# Ort der Datei auf dem Server
-		if(!file_exists('lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/')) {
+			if(!file_exists('lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/')) {
 			mkdir('lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/', 0777, true);
 		}
     	$file = 'lib/plugins/nvvConnect/cache/' . $season . '/' . $typ . '/' . explode("=", $parameter, 2)[1] . '.xml';
